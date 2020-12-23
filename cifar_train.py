@@ -25,55 +25,6 @@ def CNN(width, height, depth, classes):
     # model.add(Dense(128, activation='relu'))
     model.add(Dense(classes, activation='softmax'))
     return model
-def CNN2():
-    model = Sequential()
-    model.add(Conv2D(filters=64, kernel_size=3, input_shape=(32, 32, 3), activation='relu', padding='same'))
-    model.add(Conv2D(filters=64, kernel_size=3, input_shape=(32, 32, 3), activation='relu', padding='same'))
-    model.add(MaxPooling2D(pool_size=2,strides=2))
-
-    model.add(Conv2D(filters=128, kernel_size=3, activation='relu', padding='same'))
-    model.add(Conv2D(filters=128, kernel_size=3, activation='relu', padding='same'))
-    model.add(MaxPooling2D(pool_size=2,strides=2))
-
-    model.add(Conv2D(filters=256, kernel_size=3, activation='relu', padding='same'))
-    model.add(Conv2D(filters=256, kernel_size=3, activation='relu', padding='same'))
-    model.add(Conv2D(filters=256, kernel_size=3, activation='relu', padding='same'))
-    model.add(MaxPool2D(pool_size=2,strides=2))
-    model.add(Conv2D(filters=512, kernel_size=3, activation='relu', padding='same'))
-    model.add(Conv2D(filters=512, kernel_size=3, activation='relu', padding='same'))
-    model.add(Conv2D(filters=512, kernel_size=3, activation='relu', padding='same'))
-    model.add(MaxPooling2D(pool_size=2,strides=2))
-
-    model.add(Flatten())
-    model.add(Dense(512, activation='relu'))
-    model.add(Dropout(rate=0.25))
-    model.add(Dense(10, activation='relu'))
-    return model
-def CNN_reg(width, height, depth):
-    # initialize the model
-    model = Sequential()
-
-    model.add(Conv2D(input_shape=(width, height, depth), kernel_size=(3, 3), filters=8, strides=(1,1), activation='relu',padding="valid"))
-    model.add(Conv2D(data_format="channels_last", kernel_size=(3, 3), filters=8, strides=(1, 1), activation='relu',padding="valid"))
-    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2), padding="valid"))
-    model.add(Conv2D(data_format="channels_last", kernel_size=(3, 3), filters=16, strides=(1, 1), activation='relu',padding="valid"))
-    model.add(Conv2D(data_format="channels_last", kernel_size=(3, 3), filters=16, strides=(1, 1), activation='relu',padding="valid"))
-    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2), padding="valid"))
-    model.add(Conv2D(data_format="channels_last", kernel_size=(3, 3), filters=32, strides=(1, 1), activation='relu',padding="valid"))
-    model.add(Flatten(data_format="channels_last"))
-    # model.add(Dense(256, activation='relu'))
-    model.add(Dense(128, activation='relu'))
-    model.add(Dense(64, activation='relu'))
-    model.add(Dense(1, activation='relu'))
-    return model
-def replace(array_in):
-    array_in[array_in==1]=10
-    array_in[array_in==2]=20
-    array_in[array_in==3]=30
-    for num in range(1,10):
-        array_in[array_in==num]=num*20
-    array_out=array_in
-    return array_out
 if __name__ == '__main__':
     from keras.datasets import cifar10
     from keras.utils import np_utils, plot_model
@@ -86,24 +37,11 @@ if __name__ == '__main__':
     np.save("testy", Y_train)
     y_train = np_utils.to_categorical(Y_train)
     y_test = np_utils.to_categorical(Y_test)
-
-    # x_train = (X_train.astype('float32') / 255)
-    # x_test = (X_test.astype('float32') / 255)
-    # np.save("testx",x_train)
-    # np.save("testy", Y_train)
-    #
-    # y_train=Y_train
-    # y_test=Y_test
-    # y_train=replace(y_train)
-    # y_test = replace(y_test)
     print(y_train.shape)
     print(x_train.shape)
     print(y_test.shape)
     print(x_test.shape)
     model=CNN(32,32,3,10)
-    # model=CNN2()
-
-    # model=CNN_reg(32,32,3)
     model.summary()
     model.compile(optimizer=Adam(lr=0.0004,beta_1=0.9, beta_2=0.999, epsilon=1e-08),loss='categorical_crossentropy', metrics=['accuracy'])
     History = model.fit(x_train, y_train, batch_size=128, epochs=500, verbose=2, validation_data=(x_test, y_test))
