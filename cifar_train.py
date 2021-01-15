@@ -18,33 +18,52 @@ def CNN(width, height, depth, classes):
     model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2), padding="valid"))
     model.add(Conv2D(data_format="channels_last", kernel_size=(3, 3), filters=8, strides=(1, 1), activation='relu',padding="valid"))
     model.add(Conv2D(data_format="channels_last", kernel_size=(3, 3), filters=8, strides=(1, 1), activation='relu',padding="valid"))
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2), padding="valid"))
+    # model.add(Conv2D(data_format="channels_last", kernel_size=(3, 3), filters=8, strides=(1, 1), activation='relu',padding="valid"))
+    # model.add(Conv2D(data_format="channels_last", kernel_size=(3, 3), filters=8, strides=(1, 1), activation='relu',padding="valid"))
+    # model.add(Conv2D(data_format="channels_last", kernel_size=(3, 3), filters=8, strides=(1, 1), activation='relu',padding="valid"))
+    # model.add(Conv2D(data_format="channels_last", kernel_size=(3, 3), filters=8, strides=(1, 1), activation='relu',padding="valid"))
+    # model.add(Conv2D(data_format="channels_last", kernel_size=(3, 3), filters=8, strides=(1, 1), activation='relu',padding="valid"))
+    # model.add(Conv2D(data_format="channels_last", kernel_size=(3, 3), filters=8, strides=(1, 1), activation='relu',padding="valid"))
+    # model.add(Conv2D(data_format="channels_last", kernel_size=(3, 3), filters=8, strides=(1, 1), activation='relu',padding="valid"))
+    # model.add(Conv2D(data_format="channels_last", kernel_size=(3, 3), filters=8, strides=(1, 1), activation='relu',padding="valid"))
     # model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2), padding="valid"))
     # model.add(Conv2D(data_format="channels_last", kernel_size=(3, 3), filters=8, strides=(1, 1), activation='relu',padding="valid"))
     # model.add(Conv2D(data_format="channels_last", kernel_size=(3, 3), filters=8, strides=(1, 1), activation='relu',padding="valid"))
     model.add(Flatten(data_format="channels_last"))
     # model.add(Dense(128, activation='relu'))
+    # model.add(Dense(64, activation='relu'))
+
     model.add(Dense(classes, activation='softmax'))
     return model
 if __name__ == '__main__':
     from keras.datasets import cifar10
     from keras.utils import np_utils, plot_model
     from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPool2D
-
-    (X_train, Y_train), (X_test, Y_test) = cifar10.load_data()
+    from keras.datasets import mnist
+    (nX_train, Y_train), (nX_test, Y_test) = mnist.load_data()
+    X_train=np.load("./MNIST_padding_trainx.npy")
+    X_test=np.load("./MNIST_padding_testx.npy")
+    # (X_train, Y_train), (X_test, Y_test) = cifar10.load_data()
     x_train = X_train.astype('float32') / 255
     x_test = X_test.astype('float32') / 255
     np.save("testx",x_train)
     np.save("testy", Y_train)
     y_train = np_utils.to_categorical(Y_train)
     y_test = np_utils.to_categorical(Y_test)
+    print(x_test[0:5000,:][np.newaxis,...].shape)
+    print(x_train.shape)
+    x_train=np.vstack((x_train,x_test[0:5000,:]))
+    y_train = np.vstack((y_train, y_test[0:5000, :]))
     print(y_train.shape)
     print(x_train.shape)
     print(y_test.shape)
     print(x_test.shape)
+
     model=CNN(32,32,3,10)
     model.summary()
-    model.compile(optimizer=Adam(lr=0.0004,beta_1=0.9, beta_2=0.999, epsilon=1e-08),loss='categorical_crossentropy', metrics=['accuracy'])
-    History = model.fit(x_train, y_train, batch_size=128, epochs=500, verbose=2, validation_data=(x_test, y_test))
+    model.compile(optimizer=Adam(lr=0.000095,beta_1=0.9, beta_2=0.999, epsilon=1e-08),loss='categorical_crossentropy', metrics=['accuracy'])
+    History = model.fit(x_train, y_train, batch_size=128, epochs=600, verbose=2, validation_data=(x_test, y_test))
     pre = model.evaluate(x_test, y_test, batch_size=64, verbose=2)
 
     # print('test_loss:', pre[0], '- test_acc:', pre[1])
@@ -66,4 +85,4 @@ if __name__ == '__main__':
     plt.show()
     plt.show()
     os.system('pause')
-    model.save('VSD.h5')
+    model.save('MNIST.h5')

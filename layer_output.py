@@ -10,6 +10,8 @@ import sys
 import os
 (X_train, Y_train), (X_test, Y_test) = cifar10.load_data()
 x_train = X_train.astype('float32') / 255
+print(Y_train[0])
+os.system('pause')
 # print(x_train)
 # print(x_train)
 np.set_printoptions(threshold=np.inf)
@@ -43,7 +45,7 @@ print("*************************************************************************
 # np.save("maxpooling_output",np.squeeze(intermediate_output))
 # print(np.squeeze(intermediate_output).shape)
 print("**********************************************************************************************************************")
-layer_name = 'dense_1'
+layer_name = 'conv2d_4'
 intermediate_layer_model = Model(inputs=model.input,
                                  outputs=model.get_layer(layer_name).output)
 intermediate_output1 = intermediate_layer_model.predict(test)
